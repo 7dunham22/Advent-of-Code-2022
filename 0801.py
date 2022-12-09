@@ -61,31 +61,23 @@ for c in range(m):
   minHeight = -1
   for r in range(n):
     vis = isVisible(r, c)
-    # if not vis:
-    #   break
 
 #VIEW FROM RIGHT
 for r in range(n):
   minHeight = -1
   for c in range(m-1, -1, -1):
     vis = isVisible(r, c)
-    # if not vis:
-    #   break
 
 #VIEW FROM BOTTOM
 for c in range(m):
   minHeight = -1
   for r in range(n-1, -1, -1):
     vis = isVisible(r, c)
-    # if not vis:
-    #   break
 
 #VIEW FROM LEFT
 for r in range(n):
   minHeight = -1
   for c in range(m):
     vis = isVisible(r, c)
-    # if not vis:
-    #   break
 
 print(len(seen))

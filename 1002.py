@@ -19,8 +19,8 @@ def moveSprite(distance):
     else:
       sprite[1] += 1
 
-for r in range(len(screen)):
-  for c in range(len(screen[0])):
+for r in range(n):
+  for c in range(m):
     if c == sprite[1]-1 or c == sprite[1] or c == sprite[1]+1:
       screen[r][c] = '#'
     cmd = commands[cmdIndex]

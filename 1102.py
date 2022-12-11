@@ -1,6 +1,4 @@
-"""https://adventofcode.com/2022/day/11"""
-
-from collections import deque
+from functools import reduce
 
 with open('./inputs/1101.txt') as f:
   data = f.read().strip()
@@ -52,8 +50,8 @@ class Monkey:
     if self.operatorValue == 'old':
       val = old
     if self.operator == '+':
-      return old + int(val)
-    return old * int(val)
+      return old + val
+    return old * val
 
   def test(self, item):
     if item % self.divisibilityVal == 0:
@@ -67,15 +65,18 @@ for item in data:
     if 'Starting items:' in line:
       items = line[17:]
       items = items.split(', ')
-      items = deque(map(lambda x: int(x), items))
+      items = list(map(lambda x: int(x), items))
       monkey.items = items
     elif 'Operation' in line:
       if '*' in line:
         monkey.operator = '*'
-        monkey.operatorValue = line.split(' ')[-1]
       else:
         monkey.operator = '+'
-        monkey.operatorValue = line.split(' ')[-1]
+      operatorValue = line.split(' ')[-1]
+      if operatorValue == 'old':
+        monkey.operatorValue = operatorValue
+      else:
+        monkey.operatorValue = int(operatorValue)
     elif 'Test' in line:
       monkey.divisibilityVal = int(line.split(' ')[-1])
     elif 'true' in line:
@@ -84,14 +85,17 @@ for item in data:
       monkey.throwIfFalse = int(line.split(' ')[-1])
   monkeys.append(monkey)
 
-for i in range(20):
-  for monkey in monkeys:
-    while len(monkey.items) > 0:
-      item = monkey.items.popleft()
-      item = monkey.operation(item)
-      item = item // 3
+mod = reduce(lambda acc, x: acc * x, map(lambda monkey: monkey.divisibilityVal, monkeys), 1)
+
+for i in range(10000):
+  print(i)
+  for j in range(len(monkeys)):
+    monkey = monkeys[j]
+    for item in monkey.items:
+      item = monkey.operation(item) % mod
       newMonkey = monkey.test(item)
       monkeys[newMonkey].items.append(item)
+    monkey.items = []
 
 inspections = list(map(lambda monkey: monkey.inspectionCount, monkeys))
 inspections.sort()

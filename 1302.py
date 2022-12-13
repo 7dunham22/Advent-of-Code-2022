@@ -1,3 +1,5 @@
+import functools
+
 with open('./inputs/1301.txt') as f:
   data = f.read().strip()
 
@@ -27,34 +29,39 @@ with open('./inputs/1301.txt') as f:
 
 pairs = list(map(lambda x: x.splitlines(), data.split('\n\n')))
 
-for pair in pairs:
-  [a,b] = pair
-  pair[0] = eval(a)
-  pair[1] = eval(b)
+packets = []
+for [a,b] in pairs:
+  packets.append(eval(a))
+  packets.append(eval(b))
+
+packets.append([[2]])
+packets.append([[6]])
 
 def compare(a,b):
   if isinstance(a, list) and isinstance(b, list):
     for i in range(len(a)):
       if i == len(b):
-        return -1
+        return 1
       comp = compare(a[i], b[i])
       if comp < 0:
         return -1
       if comp > 0:
         return 1
     if len(a) < len(b):
-      return 1
+      return -1
     return 0
   if isinstance(a, list):
     return compare(a, [b])
   if isinstance(b, list):
     return compare([a], b)
-  return b-a
+  return a-b
 
-res = 0
-for i in range(len(pairs)):
-  [a,b] = pairs[i]
-  if compare(a,b) >= 0:
-    res += i+1
+packets = sorted(packets, key=functools.cmp_to_key(compare))
+
+res = 1
+for i in range(len(packets)):
+  packet = packets[i]
+  if packet == [[2]] or packet == [[6]]:
+    res *= i+1
 
 print(res)
